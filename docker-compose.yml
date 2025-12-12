@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: crypto_postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: crypto_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - crypto-network
+
+  redis:
+    image: redis:alpine
+    container_name: crypto_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - crypto-network
+
+  auth-service:
+    build: ./backend/auth-service
+    container_name: crypto_auth_service
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      DB_HOST: postgres
+      DB_USER: admin
+      DB_PASS: password123
+      DB_NAME: crypto_db
+      JWT_SECRET: your_super_secret_key_change_me
+    depends_on:
+      - postgres
+    networks:
+      - crypto-network
+
+  market-service:
+    build: ./backend/market-service
+    container_name: crypto_market_service
+    ports:
+      - "4001:4001"
+    environment:
+      PORT: 4001
+      REDIS_HOST: redis
+    depends_on:
+      - redis
+    networks:
+      - crypto-network
+
+volumes:
+  postgres_data:
+
+networks:
+  crypto-network:
+    driver: bridge
