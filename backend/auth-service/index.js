@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 4000;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret';
 
 const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
+  host: process.env.DB_HOST,
   user: process.env.DB_USER || 'admin',
   password: process.env.DB_PASS || 'password123',
   database: process.env.DB_NAME || 'crypto_db',
@@ -27,10 +27,23 @@ async function initDb() {
   )`);
 }
 
-initDb().catch(err => {
-  console.error('DB init error', err);
+async function waitForDb(retries = 10, delay = 3000) {
+  while (retries > 0) {
+    try {
+      await initDb();
+      console.log('DB connected and initialized');
+      return;
+    } catch (err) {
+      retries--;
+      console.log(`DB not ready, retrying in ${delay / 1000}s... (${retries} retries left)`);
+      await new Promise(res => setTimeout(res, delay));
+    }
+  }
+  console.error('DB connection failed after retries');
   process.exit(1);
-});
+}
+
+waitForDb();
 
 app.post('/api/auth/register', async (req, res) => {
   const { username, password } = req.body || {};
@@ -89,3 +102,54 @@ app.get('/api/auth/me', authMiddleware, async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Auth service running on port ${PORT}`));
+
+//api login
+app.post('/api/auth/refresh', (req, res) => {
+  const { token } = req.body || {};
+  if (!token) {
+    return res.status(400).json({ error: 'Missing token' });
+  }
+
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    const newToken = jwt.sign(
+      { userId: payload.userId, username: payload.username },
+      JWT_SECRET,
+      { expiresIn: '2h' }
+    );
+    res.json({ token: newToken });
+  } catch (err) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+});
+
+//api oauth google
+app.post('/api/auth/google', async (req, res) => {
+  const { googleToken } = req.body || {};
+
+  if (!googleToken) {
+    return res.status(400).json({ error: 'Missing googleToken' });
+  }
+
+  const user = {
+    userId: 999,
+    username: 'google_user'
+  };
+
+  const token = jwt.sign(
+    {
+      userId: user.userId,
+      username: user.username
+    },
+    JWT_SECRET,
+    { expiresIn: '2h' }
+  );
+
+  res.json({
+    token,
+    user: {
+      id: user.userId,
+      username: user.username
+    }
+  });
+});
