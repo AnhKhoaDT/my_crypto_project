@@ -1,35 +1,24 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
+require("dotenv").config();
 
-const authRoutes = require('./routes/auth.route');
-const pool = require('./config/database');
+const express = require("express");
+const sequelize = require("./config/database");
+const authRoutes = require("./routes/auth.route");
+const passport = require("./config/passport");
 
 const app = express();
-
-// Middleware
-app.use(cors());
 app.use(express.json());
+app.use(passport.initialize());
 
-// Health check
-app.get('/', (req, res) => {
-  res.json({ message: 'Auth Service is running' });
-});
-
-// Routes
-app.use('/api/auth', authRoutes);
-
-// Test DB connection
-(async () => {
-  try {
-    await pool.query('SELECT 1');
-    console.log('PostgreSQL connected successfully');
-  } catch (err) {
-    console.error('PostgreSQL connection failed', err);
-  }
-})();
+app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Auth Service running on port ${PORT}`);
-});
+
+sequelize
+  .sync()
+  .then(() => {
+    console.log("PostgreSQL connected");
+    app.listen(PORT, () => {
+      console.log(`Auth service running on port ${PORT}`);
+    });
+  })
+  .catch(console.error);
