@@ -1,7 +1,7 @@
 FROM node:18-alpine
-WORKDIR /app
+WORKDIR /usr/src/app
 COPY package.json package-lock.json* ./
-RUN npm install --production
+RUN npm install
 COPY . .
 EXPOSE 4000
-CMD ["node", "src/index.js"]
+CMD ["npm", "start"]
