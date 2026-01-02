@@ -1,0 +1,225 @@
+/* Coin Table Styles */
+.coin-table-container {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+}
+
+.table-header {
+    margin-bottom: 24px;
+}
+
+.table-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+    color: var(--text-primary);
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.coin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.coin-table thead {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.coin-table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.coin-table td {
+    padding: 16px;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.coin-row {
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s;
+}
+
+.coin-row:hover {
+    background-color: var(--bg-hover);
+}
+
+.rank {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.coin-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.coin-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.coin-info .name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.coin-info .symbol {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+
+.price {
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+}
+
+.change {
+    font-weight: 600;
+}
+
+.change.positive {
+    color: var(--success);
+}
+
+.change.negative {
+    color: var(--error);
+}
+
+.market-cap,
+.volume {
+    color: var(--text-secondary);
+}
+
+.coin-table-loading,
+.coin-table-error {
+    text-align: center;
+    padding: 80px 24px;
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.coin-table-loading p,
+.coin-table-error p {
+    margin-top: 16px;
+    color: var(--text-secondary);
+}
+
+/* Chart Placeholder Styles */
+.chart-placeholder {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 24px;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.chart-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.chart-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.time-btn {
+    padding: 6px 12px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.time-btn:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.time-btn.active {
+    background-color: var(--brand-color);
+    border-color: var(--brand-color);
+    color: #1e2329;
+}
+
+.chart-content {
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    border: 2px dashed var(--border-color);
+}
+
+.placeholder-message {
+    text-align: center;
+    max-width: 400px;
+}
+
+.placeholder-message svg {
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+.placeholder-message h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: var(--text-primary);
+}
+
+.placeholder-message p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .coin-table th:nth-child(5),
+    .coin-table td:nth-child(5),
+    .coin-table th:nth-child(6),
+    .coin-table td:nth-child(6) {
+        display: none;
+    }
+
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .chart-content {
+        height: 300px;
+    }
+}
