@@ -1,11 +1,17 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MarketService } from './market.service';
+import { BinanceService } from '../binance/binance.service';
+import { MarketGateway } from '../websocket/market.gateway';
 
 @ApiTags('Market')
 @Controller('market')
 export class MarketController {
-  constructor(private readonly marketService: MarketService) { }
+  constructor(
+    private readonly marketService: MarketService,
+    private readonly binanceService: BinanceService,
+    private readonly marketGateway: MarketGateway,
+  ) { }
 
   @Get('coins')
   @ApiOperation({
@@ -124,5 +130,25 @@ export class MarketController {
     @Query('count') count: string,
   ) {
     return this.marketService.getKlines(symbol, interval, count ? parseInt(count, 10) : undefined);
+  }
+
+  @Get('ws-stats')
+  @ApiOperation({
+    summary: 'Get WebSocket connection statistics',
+    description: 'Returns statistics about active WebSocket connections and Binance connections',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'WebSocket statistics',
+    schema: {
+      example: {
+        activeChannels: 3,
+        totalClients: 5,
+        binanceConnections: 3,
+      },
+    },
+  })
+  getWebSocketStats() {
+    return this.marketGateway.getStats();
   }
 }
